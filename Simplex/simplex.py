@@ -8,6 +8,7 @@ for line in file:
     temp = line.split()
     values = [float(i) for i in temp]
     a.append(values)
+file.close()
 
 # parse data
 m = int(a[0][0])
@@ -15,18 +16,6 @@ n = int(a[0][1])
 b = [a[1][i] for i in range(m)]
 c = [a[2][i] for i in range(n)]
 del a[0:3]
-
-'''
-print("m = ", m)
-print("n = ", n)
-print("matrix b = ", end=" ")
-for i in range(m):
-    print(b[i], end=" ")
-print("\nmatrix c^T = ", end=" ")
-for i in range(n):
-    print(c[i], end=" ")
-print(a)
-'''
 
 # set up matrix tableau
 tableau = [[0.0 for i in range(m + n + 1)] for j in range(m + 1)]
@@ -63,10 +52,39 @@ while lowestVal < 0.0:
                 pivotRow = i
                 pivotVal = tableau[i][lowestIndex]
 
+    # adjust pivot row
     for i in range(m + n + 1):
         tableau[pivotRow][i] = tableau[pivotRow][i] / pivotVal
-        # print(tableau[pivotRow][i])
 
-    break
+    # perform arithmetic on non-pivot rows
+    tempTab = [[0.0 for i in range(m + n + 1)] for j in range(m + 1)]
+    for i in range(m + 1):
+        if i != pivotRow:
+            for j in range(m + n + 1):
+                tempTab[i][j] = tableau[i][j] - tableau[i][lowestIndex] * tableau[pivotRow][j]
+        else:
+            for j in range(m + n + 1):
+                # pivot row already adjusted
+                tempTab[i][j] = tableau[i][j]
 
+    tableau = tempTab
+    del tempTab
+
+    # verify optimization
+    lowestVal = tableau[-1][0]
+    lowestIndex = 0
+    for i in range(m + n):
+        if tableau[-1][i] < lowestVal:
+            lowestVal = tableau[-1][i]
+            lowestIndex = i
+    
+# output solution to file
+file = open("simplex.out", "w")
+file.write(str(tableau[-1][-1]))
+file.write("\n")
+for i in range(n):
+    for j in range(m):
+        if tableau[j][i] == 1.0:
+            file.write(str(tableau[j][-1]))
+            file.write("\n")
 file.close()
