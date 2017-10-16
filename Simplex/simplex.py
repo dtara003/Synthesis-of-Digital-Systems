@@ -47,21 +47,26 @@ for i in range(m + n):
     if tableau[-1][i] < lowestVal:
         lowestVal = tableau[-1][i]
         lowestIndex = i
+
 # perform pivots
 while lowestVal < 0.0:
-    lowestRatio = tableau[0][-1]
+    # find lowest ratio and pivot point
+    lowestRatio = float("inf")
+    pivotRow = 0
+    pivotVal = 0.0
     for i in range(m):
+        # skip b values with negative corresponding element
+        if tableau[i][lowestIndex] >= 0.0:
+            ratio = tableau[i][-1] / tableau[i][lowestIndex]
+            if ratio < lowestRatio:
+                lowestRatio = ratio
+                pivotRow = i
+                pivotVal = tableau[i][lowestIndex]
 
+    for i in range(m + n + 1):
+        tableau[pivotRow][i] = tableau[pivotRow][i] / pivotVal
+        # print(tableau[pivotRow][i])
 
-    # verify optimization
-    lowestVal = tableau[-1][0]
-    lowestIndex = 0
-    for i in range(m + n):
-        if tableau[-1][i] < lowestVal:
-            lowestVal = tableau[-1][i]
-            lowestIndex = i
-
-# print(tableau)
-print(lowestIndex)
+    break
 
 file.close()
