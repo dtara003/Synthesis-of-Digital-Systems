@@ -77,9 +77,16 @@ while lowestVal < 0.0:
         if tableau[-1][i] < lowestVal:
             lowestVal = tableau[-1][i]
             lowestIndex = i
-    
+
 # output solution to file
 file = open("simplex.out", "w")
+
+for i in range(m):
+    if tableau[i][-1] < 0:
+        file.write("bounded-infeasable")
+        file.close()
+        sys.exit()
+
 file.write(str(tableau[-1][-1]))
 file.write("\n")
 for i in range(n):
